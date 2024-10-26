@@ -33,6 +33,8 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
         }
     }
 
+    private static let inset = CGFloat(4)
+
     // MARK: Init
 
     init() {
@@ -90,9 +92,9 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
             let section = switch sectionType {
             case .people, .colors:
                 makeGridSection(with: badge)
+            case .planets:
+                makeHorizontalScrollingSection(with: badge)
             }
-
-            let sectionInset = CGFloat(4)
 
             // Headers and Footers
             let headerFooterSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
@@ -107,7 +109,7 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
                                                                             alignment: .bottom)
 
             section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
-            section.contentInsets = NSDirectionalEdgeInsets(top: sectionInset, leading: sectionInset, bottom: sectionInset, trailing: sectionInset)
+            section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
 
             return section
         }
@@ -115,13 +117,12 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
 
     private static func makeGridSection(with badge: NSCollectionLayoutSupplementaryItem) -> NSCollectionLayoutSection {
         let fractionalWidth = CGFloat(0.5)
-        let itemInset = CGFloat(4)
 
         // Item
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fractionalWidth),
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize, supplementaryItems: [badge])
-        item.contentInsets = NSDirectionalEdgeInsets(top: itemInset, leading: itemInset, bottom: itemInset, trailing: itemInset)
+        item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
 
         // Group
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -130,6 +131,26 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
 
         // Section
         let section = NSCollectionLayoutSection(group: group)
+
+        return section
+    }
+
+
+    private static func makeHorizontalScrollingSection(with badge: NSCollectionLayoutSupplementaryItem) -> NSCollectionLayoutSection {
+        let size = NSCollectionLayoutSize(widthDimension: .absolute(150),
+                                          heightDimension: .absolute(150))
+
+        // Item
+        let item = NSCollectionLayoutItem(layoutSize: size, supplementaryItems: [badge])
+        item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+
+        // Group
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: size,
+                                                       subitems: [item])
+
+        // Section
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
 
         return section
     }
@@ -204,5 +225,6 @@ extension GridViewController {
     enum Section: CaseIterable {
         case people
         case colors
+        case planets
     }
 }
