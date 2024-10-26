@@ -67,6 +67,12 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
             return
         }
 
+        if let planetVM = viewModel as? PlanetCellViewModelGrid {
+            let planetVC = PlanetViewController(planet: planetVM.planet)
+            self.navigationController?.pushViewController(planetVC, animated: true)
+            return
+        }
+
         assertionFailure("unhandled cell selection")
     }
 
