@@ -68,7 +68,7 @@ class ExampleViewController: UIViewController {
     }
 
     func removeAll() {
-        self.model = Model(people: [], colors: [])
+        self.model = Model(people: [], colors: [], planets: [])
     }
 
     func deleteItem(id: UniqueIdentifier) {
