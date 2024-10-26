@@ -23,7 +23,7 @@ struct ColorCellViewModelGrid: CellViewModel {
 
     let contextMenuConfiguration: UIContextMenuConfiguration?
 
-    func configure(cell: GridColorCell) {
+    func configure(cell: BasicGridCell) {
         cell.label.text = self.color.name
         cell.backgroundColor = self.color.uiColor
     }

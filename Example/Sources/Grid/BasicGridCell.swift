@@ -13,7 +13,7 @@
 
 import UIKit
 
-final class GridColorCell: UICollectionViewCell {
+final class BasicGridCell: UICollectionViewCell {
     let label = UILabel()
 
     override init(frame: CGRect) {
