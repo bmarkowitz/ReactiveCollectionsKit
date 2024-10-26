@@ -216,8 +216,37 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
             supplementaryViews: colorFavoriteBadges
         )
 
+        // Create planet section
+        let planetCellViewModels = self.model.planets.map {
+            let menuConfig = UIContextMenuConfiguration.configFor(
+                itemId: $0.id,
+                favoriteAction: { [unowned self] in
+                    self.toggleFavorite(id: $0)
+                },
+                deleteAction: { [unowned self] in
+                    self.deleteItem(id: $0)
+                }
+            )
+            return PlanetCellViewModelGrid(
+                planet: $0,
+                contextMenuConfiguration: menuConfig
+            ).eraseToAnyViewModel()
+        }
+        let planetHeader = HeaderViewModel(title: "Planets", style: .large)
+        let planetFooter = FooterViewModel(text: "\(self.model.planets.count) planets")
+        let planetFavoriteBadges = self.model.planets.compactMap {
+            FavoriteBadgeViewModel(isHidden: !$0.isFavorite, id: $0.name + "_badge")
+        }
+        let planetSection = SectionViewModel(
+            id: "section_planets_grid",
+            cells: planetCellViewModels,
+            header: planetHeader,
+            footer: planetFooter,
+            supplementaryViews: planetFavoriteBadges
+        )
+
         // Create final view model
-        return CollectionViewModel(id: "grid_view", sections: [peopleSection, colorSection])
+        return CollectionViewModel(id: "grid_view", sections: [peopleSection, colorSection, planetSection])
     }
 }
 

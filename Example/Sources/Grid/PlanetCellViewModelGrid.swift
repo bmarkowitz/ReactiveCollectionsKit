@@ -25,6 +25,7 @@ struct PlanetCellViewModelGrid: CellViewModel {
 
     func configure(cell: GridColorCell) {
         cell.label.text = self.planet.name
+        cell.contentView.backgroundColor = .systemGroupedBackground
     }
 
     // MARK: Hashable
