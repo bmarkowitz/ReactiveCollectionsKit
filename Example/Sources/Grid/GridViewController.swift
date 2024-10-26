@@ -75,47 +75,63 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
     // MARK: Private
 
     private static func makeLayout() -> UICollectionViewCompositionalLayout {
-        let fractionalWidth = CGFloat(0.5)
-        let inset = CGFloat(4)
+        return UICollectionViewCompositionalLayout { sectionIndex, _ in
+            let sectionType = Section.allCases[sectionIndex]
 
-        // Supplementary Item
-        let offset = 0.15
-        let badgeAnchor = NSCollectionLayoutAnchor(edges: [.top, .trailing], fractionalOffset: CGPoint(x: offset, y: -offset))
-        let dimension = NSCollectionLayoutDimension.absolute(30)
-        let badgeSize = NSCollectionLayoutSize(widthDimension: dimension, heightDimension: dimension)
-        let badge = NSCollectionLayoutSupplementaryItem(layoutSize: badgeSize,
-                                                        elementKind: FavoriteBadgeViewModel.kind,
-                                                        containerAnchor: badgeAnchor)
+            // Supplementary Item
+            let offset = 0.15
+            let badgeAnchor = NSCollectionLayoutAnchor(edges: [.top, .trailing], fractionalOffset: CGPoint(x: offset, y: -offset))
+            let dimension = NSCollectionLayoutDimension.absolute(30)
+            let badgeSize = NSCollectionLayoutSize(widthDimension: dimension, heightDimension: dimension)
+            let badge = NSCollectionLayoutSupplementaryItem(layoutSize: badgeSize,
+                                                            elementKind: FavoriteBadgeViewModel.kind,
+                                                            containerAnchor: badgeAnchor)
+
+            let section = switch sectionType {
+            case .people, .colors:
+                makeGridSection(with: badge)
+            }
+
+            let sectionInset = CGFloat(4)
+
+            // Headers and Footers
+            let headerFooterSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                          heightDimension: .estimated(50))
+
+            let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerFooterSize,
+                                                                            elementKind: HeaderViewModel.kind,
+                                                                            alignment: .top)
+            sectionHeader.pinToVisibleBounds = true
+            let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerFooterSize,
+                                                                            elementKind: FooterViewModel.kind,
+                                                                            alignment: .bottom)
+
+            section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
+            section.contentInsets = NSDirectionalEdgeInsets(top: sectionInset, leading: sectionInset, bottom: sectionInset, trailing: sectionInset)
+
+            return section
+        }
+    }
+
+    private static func makeGridSection(with badge: NSCollectionLayoutSupplementaryItem) -> NSCollectionLayoutSection {
+        let fractionalWidth = CGFloat(0.5)
+        let itemInset = CGFloat(4)
 
         // Item
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fractionalWidth),
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize, supplementaryItems: [badge])
-        item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+        item.contentInsets = NSDirectionalEdgeInsets(top: itemInset, leading: itemInset, bottom: itemInset, trailing: itemInset)
 
         // Group
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                heightDimension: .fractionalWidth(fractionalWidth))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
-        // Headers and Footers
-        let headerFooterSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .estimated(50))
-
-        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerFooterSize,
-                                                                        elementKind: HeaderViewModel.kind,
-                                                                        alignment: .top)
-        sectionHeader.pinToVisibleBounds = true
-        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerFooterSize,
-                                                                        elementKind: FooterViewModel.kind,
-                                                                        alignment: .bottom)
-
         // Section
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
-        section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
 
-        return UICollectionViewCompositionalLayout(section: section)
+        return section
     }
 
     private func makeViewModel() -> CollectionViewModel {
@@ -181,5 +197,12 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
 
         // Create final view model
         return CollectionViewModel(id: "grid_view", sections: [peopleSection, colorSection])
+    }
+}
+
+extension GridViewController {
+    enum Section: CaseIterable {
+        case people
+        case colors
     }
 }
