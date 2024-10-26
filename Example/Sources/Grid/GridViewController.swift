@@ -115,6 +115,14 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
                                                                             alignment: .bottom)
 
             section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
+
+            if #available(iOS 16.0, *) {
+                section.supplementaryContentInsetsReference = .none
+            }
+            else {
+                section.supplementariesFollowContentInsets = false
+            }
+
             section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
 
             return section

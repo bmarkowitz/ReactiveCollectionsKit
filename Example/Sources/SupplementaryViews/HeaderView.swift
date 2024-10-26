@@ -32,6 +32,7 @@ struct HeaderViewModel: SupplementaryHeaderViewModel {
         switch self.style {
         case .large:
             config = .prominentInsetGroupedHeader()
+            config.directionalLayoutMargins = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
 
         case .small:
             config = .groupedHeader()
