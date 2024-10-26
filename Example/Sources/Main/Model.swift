@@ -19,9 +19,12 @@ struct Model {
 
     private(set) var colors = ColorModel.makeColors()
 
+    private(set) var planets = PlanetModel.makePlanets()
+
     mutating func shuffle() {
         self.people.shuffle()
         self.colors.shuffle()
+        self.planets.shuffle()
     }
 
     mutating func delete(id: UniqueIdentifier) {
@@ -30,6 +33,9 @@ struct Model {
         }
         if let index = self.colors.firstIndex(where: { $0.id == id }) {
             self.colors.remove(at: index)
+        }
+        if let index = self.planets.firstIndex(where: { $0.id == id }) {
+            self.planets.remove(at: index)
         }
     }
 
@@ -40,6 +46,9 @@ struct Model {
         if let index = self.colors.firstIndex(where: { $0.id == id }) {
             self.colors[index].isFavorite.toggle()
         }
+        if let index = self.planets.firstIndex(where: { $0.id == id }) {
+            self.planets[index].isFavorite.toggle()
+        }
     }
 }
 
@@ -47,12 +56,16 @@ extension Model: CustomDebugStringConvertible {
     var debugDescription: String {
         let peopleNames = self.people.map(\.name).joined(separator: "\n\t")
         let colorNames = self.colors.map(\.name).joined(separator: "\n\t")
+        let planetNames = self.planets.map(\.name).joined(separator: "\n\t")
         return """
         People:
             \(peopleNames)
 
         Colors:
             \(colorNames)
+        
+        Planets:
+            \(planetNames)
         """
     }
 }
