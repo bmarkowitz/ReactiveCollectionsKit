@@ -78,6 +78,8 @@ public protocol CellViewModel: DiffableViewModel, ViewRegistrationProvider {
     /// This corresponds to the delegate method `collectionView(_:didUnhighlightItemAt:)`.
     @MainActor
     func didUnhighlight()
+
+    var children: [any CellViewModel] { get }
 }
 
 extension CellViewModel {
@@ -124,6 +126,8 @@ extension CellViewModel {
     /// Default implementation. Does nothing.
     @MainActor
     public func didUnhighlight() { }
+
+    public var children: [any CellViewModel] { [] }
 
     // MARK: Internal
 
@@ -236,6 +240,8 @@ public struct AnyCellViewModel: CellViewModel {
         self._didUnhighlight()
     }
 
+    public var children: [any CellViewModel] { self._children }
+
     /// :nodoc: "override" the extension
     public let cellClass: AnyClass
 
@@ -258,6 +264,7 @@ public struct AnyCellViewModel: CellViewModel {
     private let _didEndDisplaying: @Sendable @MainActor () -> Void
     private let _didHighlight: @Sendable @MainActor() -> Void
     private let _didUnhighlight: @Sendable @MainActor () -> Void
+    private let _children: [any CellViewModel]
 
     // MARK: Init
 
@@ -298,6 +305,7 @@ public struct AnyCellViewModel: CellViewModel {
         self._didUnhighlight = {
             viewModel.didUnhighlight()
         }
+        self._children = viewModel.children
         self.cellClass = viewModel.cellClass
         self.reuseIdentifier = viewModel.reuseIdentifier
     }
