@@ -15,6 +15,7 @@ import Foundation
 import UIKit
 
 typealias DiffableSnapshot = NSDiffableDataSourceSnapshot<AnyHashable, AnyHashable>
+typealias DiffableSectionSnapshot = NSDiffableDataSourceSectionSnapshot<AnyHashable>
 
 extension DiffableSnapshot {
     init(viewModel: CollectionViewModel) {
@@ -26,6 +27,20 @@ extension DiffableSnapshot {
         viewModel.sections.forEach {
             let allCellIdentifiers = $0.cells.map(\.id)
             self.appendItems(allCellIdentifiers, toSection: $0.id)
+        }
+    }
+}
+
+extension DiffableSectionSnapshot {
+    init(viewModel: SectionViewModel) {
+        self.init()
+
+        let allCellIdentifiers = viewModel.cells.map(\.id)
+        self.append(allCellIdentifiers)
+
+        viewModel.cells.forEach {
+            let allChildCellIdentifiers = $0.children.map(\.id)
+            self.append(allChildCellIdentifiers, to: $0.id)
         }
     }
 }
