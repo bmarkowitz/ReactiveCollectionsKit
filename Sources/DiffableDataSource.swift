@@ -143,6 +143,11 @@ final class DiffableDataSource: UICollectionViewDiffableDataSource<AnyHashable, 
         )
         destinationSnapshot.reconfigureItems(itemsToReconfigure)
 
+        destination.sections.forEach {
+            let snapshot = DiffableSectionSnapshot(viewModel: $0)
+            self.apply(snapshot, to: $0.id, animatingDifferences: animated)
+        }
+
         // Apply the snapshot with item reconfigure updates.
         //
         // Swift 6 complains about 'call to main actor-isolated instance method' here.
