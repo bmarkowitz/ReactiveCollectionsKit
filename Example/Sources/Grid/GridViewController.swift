@@ -33,18 +33,20 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
         }
     }
 
-    private static let inset = CGFloat(4)
+    private let inset = CGFloat(4)
 
     // MARK: Init
 
     init() {
-        super.init(collectionViewLayout: Self.makeLayout())
+        super.init(collectionViewLayout: .init())
+        collectionView.setCollectionViewLayout(makeLayout(), animated: false)
     }
 
     // MARK: View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         let viewModel = self.makeViewModel()
         self.driver.update(viewModel: viewModel)
     }
@@ -82,9 +84,11 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
 
     // MARK: Private
 
-    private static func makeLayout() -> UICollectionViewCompositionalLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, _ in
-            let sectionType = Section.allCases[sectionIndex]
+    private func makeLayout() -> UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
+            guard let self else { return nil }
+
+            let sectionType = model.gridSections[sectionIndex]
 
             // Supplementary Item
             let offset = 0.15
@@ -129,7 +133,7 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
         }
     }
 
-    private static func makeGridSection(with badge: NSCollectionLayoutSupplementaryItem) -> NSCollectionLayoutSection {
+    private func makeGridSection(with badge: NSCollectionLayoutSupplementaryItem) -> NSCollectionLayoutSection {
         let fractionalWidth = CGFloat(0.5)
 
         // Item
@@ -150,7 +154,7 @@ final class GridViewController: ExampleViewController, CellEventCoordinator {
     }
 
 
-    private static func makeHorizontalScrollingSection(with badge: NSCollectionLayoutSupplementaryItem) -> NSCollectionLayoutSection {
+    private func makeHorizontalScrollingSection(with badge: NSCollectionLayoutSupplementaryItem) -> NSCollectionLayoutSection {
         let size = NSCollectionLayoutSize(widthDimension: .absolute(150),
                                           heightDimension: .absolute(150))
 

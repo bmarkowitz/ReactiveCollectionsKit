@@ -21,6 +21,8 @@ struct Model {
 
     private(set) var planets = PlanetModel.makePlanets()
 
+    private(set) var gridSections: [GridSection] = GridSection.allCases
+
     mutating func shuffle() {
         self.people.shuffle()
         self.colors.shuffle()
@@ -37,6 +39,8 @@ struct Model {
         if let index = self.planets.firstIndex(where: { $0.id == id }) {
             self.planets.remove(at: index)
         }
+
+        updateSections()
     }
 
     mutating func toggleFavorite(id: UniqueIdentifier) {
@@ -48,6 +52,20 @@ struct Model {
         }
         if let index = self.planets.firstIndex(where: { $0.id == id }) {
             self.planets[index].isFavorite.toggle()
+        }
+    }
+
+    private mutating func updateSections() {
+        self.gridSections = []
+
+        if !self.people.isEmpty {
+            self.gridSections.append(.people)
+        }
+        if !self.colors.isEmpty {
+            self.gridSections.append(.colors)
+        }
+        if !self.planets.isEmpty {
+            self.gridSections.append(.planets)
         }
     }
 }
@@ -67,5 +85,13 @@ extension Model: CustomDebugStringConvertible {
         Planets:
             \(planetNames)
         """
+    }
+}
+
+extension Model {
+    enum GridSection: CaseIterable {
+        case people
+        case colors
+        case planets
     }
 }
