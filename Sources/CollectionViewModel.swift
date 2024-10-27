@@ -71,8 +71,15 @@ public struct CollectionViewModel: DiffableViewModel {
     /// - Returns: The cell, if it exists.
     public func cellViewModel(for id: UniqueIdentifier) -> AnyCellViewModel? {
         for section in self.sections {
-            for cell in section.cells where cell.id == id {
-                return cell
+            for cell in section.cells {
+                if cell.id == id {
+                    return cell
+                }
+                else {
+                    for child in cell.children where child.id == id {
+                        return AnyCellViewModel(child)
+                    }
+                }
             }
         }
         return nil
