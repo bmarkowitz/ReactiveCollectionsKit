@@ -47,7 +47,11 @@ extension PersonModel {
     static func makePeople() -> [PersonModel] {
         [
             PersonModel(name: "Noam Chomsky", birthdate: Date(year: 1_928, month: 12, day: 7), nationality: "🇺🇸", subPeople: [
-                .init(name: "Steve Jobs", birthdate: Date(year: 1955, month: 2, day: 24), nationality: "🇺🇸")
+                .init(name: "Steve Jobs", birthdate: Date(year: 1955, month: 2, day: 24), nationality: "🇺🇸", subPeople: [
+                    .init(name: "Another Steve Jobs", birthdate: Date(year: 1955, month: 2, day: 24), nationality: "🇺🇸", subPeople: [
+                        .init(name: "Yet Another Steve Jobs", birthdate: Date(year: 1955, month: 2, day: 24), nationality: "🇺🇸")
+                    ])
+                ])
             ]),
             PersonModel(name: "Emma Goldman", birthdate: Date(year: 1_869, month: 6, day: 27), nationality: "🇷🇺"),
             PersonModel(name: "Mikhail Bakunin", birthdate: Date(year: 1_814, month: 5, day: 30), nationality: "🇷🇺"),

@@ -92,9 +92,7 @@ final class ListViewController: ExampleViewController, CellEventCoordinator {
                 }
             )
 
-            let children: [any CellViewModel] = person.subPeople.map {
-                PersonCellViewModelList(person: $0, contextMenuConfiguration: nil, children: [])
-            }
+            let children = makeViewModel(for: person.subPeople)
 
             return PersonCellViewModelList(
                 person: person,
@@ -138,6 +136,14 @@ final class ListViewController: ExampleViewController, CellEventCoordinator {
 
         // Create final view model
         return CollectionViewModel(id: "list_view", sections: [peopleSection, colorSection])
+    }
+
+    private func makeViewModel(for people: [PersonModel]) -> [PersonCellViewModelList] {
+        let children: [PersonCellViewModelList] = people.map {
+            PersonCellViewModelList(person: $0, contextMenuConfiguration: nil, children: makeViewModel(for: $0.subPeople))
+        }
+
+        return children
     }
 }
 
