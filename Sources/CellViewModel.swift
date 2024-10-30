@@ -240,7 +240,7 @@ public struct AnyCellViewModel: CellViewModel {
         self._didUnhighlight()
     }
 
-    public var children: [any CellViewModel] { self._children }
+    public var children: [AnyCellViewModel] { self._children }
 
     /// :nodoc: "override" the extension
     public let cellClass: AnyClass
@@ -264,7 +264,7 @@ public struct AnyCellViewModel: CellViewModel {
     private let _didEndDisplaying: @Sendable @MainActor () -> Void
     private let _didHighlight: @Sendable @MainActor() -> Void
     private let _didUnhighlight: @Sendable @MainActor () -> Void
-    private let _children: [any CellViewModel]
+    private let _children: [AnyCellViewModel]
 
     // MARK: Init
 
@@ -305,7 +305,7 @@ public struct AnyCellViewModel: CellViewModel {
         self._didUnhighlight = {
             viewModel.didUnhighlight()
         }
-        self._children = viewModel.children
+        self._children = viewModel.children.map { $0.eraseToAnyViewModel() }
         self.cellClass = viewModel.cellClass
         self.reuseIdentifier = viewModel.reuseIdentifier
     }
