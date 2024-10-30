@@ -38,9 +38,20 @@ extension DiffableSectionSnapshot {
         let allCellIdentifiers = viewModel.cells.map(\.id)
         self.append(allCellIdentifiers)
 
-        viewModel.cells.forEach {
-            let allChildCellIdentifiers = $0.children.map(\.id)
-            self.append(allChildCellIdentifiers, to: $0.id)
+        viewModel.cells.forEach { cell in
+            appendAllChildren(from: cell, to: cell.id)
+        }
+    }
+
+    private mutating func appendAllChildren(from cell: AnyCellViewModel, to parentId: AnyHashable) {
+        let childIdentifiers = cell.children.map(\.id)
+
+        guard childIdentifiers.isNotEmpty else { return }
+
+        self.append(childIdentifiers, to: parentId)
+
+        for child in cell.children {
+            appendAllChildren(from: child, to: child.id)
         }
     }
 }
