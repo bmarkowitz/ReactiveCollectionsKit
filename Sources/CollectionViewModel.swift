@@ -65,23 +65,19 @@ public struct CollectionViewModel: DiffableViewModel {
 
     // MARK: Accessing Cells
 
-    /// Returns the cell for the specified `id`.
+    /// Returns the cell for the specified `id` by traversing each section and all of the children of each cell.
     ///
     /// - Parameter id: The identifier for the cell.
     /// - Returns: The cell, if it exists.
     public func cellViewModel(for id: UniqueIdentifier) -> AnyCellViewModel? {
         for section in self.sections {
             for cell in section.cells {
-                if cell.id == id {
-                    return cell
-                }
-                else {
-                    for child in cell.children where child.id == id {
-                        return AnyCellViewModel(child)
-                    }
+                if let foundViewModel = cellViewModel(in: cell, with: id) {
+                    return foundViewModel
                 }
             }
         }
+
         return nil
     }
 
@@ -99,6 +95,21 @@ public struct CollectionViewModel: DiffableViewModel {
         precondition(indexPath.item < cells.count)
 
         return cells[indexPath.item]
+    }
+
+    /// Recursively traverse the children array of each child to locate a matching cell view model
+    private func cellViewModel(in viewModel: AnyCellViewModel, with id: UniqueIdentifier) -> AnyCellViewModel? {
+        if viewModel.id == id {
+            return viewModel
+        }
+
+        for child in viewModel.children {
+            if let foundChildViewModel = cellViewModel(in: child, with: id) {
+                return foundChildViewModel
+            }
+        }
+
+        return nil
     }
 
     // MARK: Accessing Supplementary Views
