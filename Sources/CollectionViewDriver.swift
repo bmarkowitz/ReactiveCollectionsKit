@@ -297,25 +297,25 @@ extension CollectionViewDriver: UICollectionViewDelegate {
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView,
                                shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        self.viewModel.cellViewModel(at: indexPath).shouldSelect
+        self.viewModel.cellViewModel(collectionView, at: indexPath).shouldSelect
     }
 
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView,
                                didSelectItemAt indexPath: IndexPath) {
-        self.viewModel.cellViewModel(at: indexPath).didSelect(with: self._cellEventCoordinator)
+        self.viewModel.cellViewModel(collectionView, at: indexPath).didSelect(with: self._cellEventCoordinator)
     }
 
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView,
                                shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-        self.viewModel.cellViewModel(at: indexPath).shouldDeselect
+        self.viewModel.cellViewModel(collectionView, at: indexPath).shouldDeselect
     }
 
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView,
                                didDeselectItemAt indexPath: IndexPath) {
-        self.viewModel.cellViewModel(at: indexPath).didDeselect(with: self._cellEventCoordinator)
+        self.viewModel.cellViewModel(collectionView, at: indexPath).didDeselect(with: self._cellEventCoordinator)
     }
 
     // MARK: Managing cell highlighting
@@ -323,19 +323,19 @@ extension CollectionViewDriver: UICollectionViewDelegate {
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView,
                                shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        self.viewModel.cellViewModel(at: indexPath).shouldHighlight
+        self.viewModel.cellViewModel(collectionView, at: indexPath).shouldHighlight
     }
 
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView,
                                didHighlightItemAt indexPath: IndexPath) {
-        self.viewModel.cellViewModel(at: indexPath).didHighlight()
+        self.viewModel.cellViewModel(collectionView, at: indexPath).didHighlight()
     }
 
     /// :nodoc:
     public func collectionView(_ collectionView: UICollectionView,
                                didUnhighlightItemAt indexPath: IndexPath) {
-        self.viewModel.cellViewModel(at: indexPath).didUnhighlight()
+        self.viewModel.cellViewModel(collectionView, at: indexPath).didUnhighlight()
     }
 
     // MARK: Managing context menus
@@ -344,7 +344,7 @@ extension CollectionViewDriver: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView,
                                contextMenuConfigurationForItemAt indexPath: IndexPath,
                                point: CGPoint) -> UIContextMenuConfiguration? {
-        self.viewModel.cellViewModel(at: indexPath).contextMenuConfiguration
+        self.viewModel.cellViewModel(collectionView, at: indexPath).contextMenuConfiguration
     }
 
     // MARK: Tracking the addition and removal of views
@@ -353,7 +353,7 @@ extension CollectionViewDriver: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView,
                                willDisplay cell: UICollectionViewCell,
                                forItemAt indexPath: IndexPath) {
-        self.viewModel._safeCellViewModel(at: indexPath)?.willDisplay()
+        self.viewModel._safeCellViewModel(collectionView, at: indexPath)?.willDisplay()
     }
 
     /// :nodoc:
@@ -368,7 +368,7 @@ extension CollectionViewDriver: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView,
                                didEndDisplaying cell: UICollectionViewCell,
                                forItemAt indexPath: IndexPath) {
-        self.viewModel._safeCellViewModel(at: indexPath)?.didEndDisplaying()
+        self.viewModel._safeCellViewModel(collectionView, at: indexPath)?.didEndDisplaying()
     }
 
     /// :nodoc:

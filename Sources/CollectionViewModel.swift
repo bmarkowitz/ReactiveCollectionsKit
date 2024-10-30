@@ -87,14 +87,27 @@ public struct CollectionViewModel: DiffableViewModel {
     /// - Returns: The cell at `indexPath`.
     ///
     /// - Precondition: The specified `indexPath` must be valid.
-    public func cellViewModel(at indexPath: IndexPath) -> AnyCellViewModel {
+    public func cellViewModel(_ collectionView: UICollectionView, at indexPath: IndexPath) -> AnyCellViewModel {
         precondition(indexPath.section < self.count)
         let section = self.sectionViewModel(at: indexPath.section)
 
         let cells = section.cells
         precondition(indexPath.item < cells.count)
 
-        return cells[indexPath.item]
+        guard let diffableDataSource = collectionView.dataSource as? DiffableDataSource
+        else {
+            return cells[indexPath.item]
+        }
+
+        let snapshot = diffableDataSource.snapshot(for: section.id)
+        let id = snapshot.visibleItems[indexPath.item]
+
+        guard let cellViewModel = cellViewModel(for: id)
+        else {
+            return cells[indexPath.item]
+        }
+
+        return cellViewModel
     }
 
     /// Recursively traverse the children array of each child to locate a matching cell view model
@@ -186,12 +199,12 @@ public struct CollectionViewModel: DiffableViewModel {
         return self.sectionViewModel(at: index)
     }
 
-    func _safeCellViewModel(at indexPath: IndexPath) -> AnyCellViewModel? {
+    func _safeCellViewModel(_ collectionView: UICollectionView, at indexPath: IndexPath) -> AnyCellViewModel? {
         guard let section = self._safeSectionViewModel(at: indexPath.section),
               indexPath.item < section.cells.count else {
             return nil
         }
-        return self.cellViewModel(at: indexPath)
+        return self.cellViewModel(collectionView, at: indexPath)
     }
 
     func _safeSupplementaryViewModel(ofKind kind: String, at indexPath: IndexPath) -> AnySupplementaryViewModel? {
